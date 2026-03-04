@@ -24,3 +24,13 @@ def test_filter_returns_interactions_below_max() -> None:
     result = filter_by_max_item_id(interactions=interactions, max_item_id=2)
     assert len(result) == 1
     assert result[0].id == 1
+
+def test_filter_excludes_interaction_with_different_learner_id() -> None:
+    """Test that filtering by item_id includes interactions regardless of learner_id."""
+    interactions = [
+        _make_log(1, 1, 1),  # learner_id=1, item_id=1
+        _make_log(2, 2, 1)   # learner_id=2, item_id=1 (different learner_id)
+    ]
+    result = filter_by_max_item_id(interactions, 1)
+    assert len(result) == 2
+    assert {log.id for log in result} == {1, 2}
